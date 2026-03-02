@@ -1,0 +1,544 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   MediStock Pro - Custom Styles
+   Mobile-first responsive medical store management app
+   ============================================================ */
+
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-gray-50 text-gray-800 antialiased;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Mobile-first base: prevent zoom on inputs on iOS */
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="date"],
+    select,
+    textarea {
+        font-size: 16px;
+    }
+
+    @screen md {
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="date"],
+        select,
+        textarea {
+            font-size: 14px;
+        }
+    }
+}
+
+@layer components {
+    /* ----------------------------------------------------------
+       Custom Scrollbar
+       ---------------------------------------------------------- */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        @apply bg-gray-100 rounded-full;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        @apply bg-gray-300 rounded-full;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        @apply bg-gray-400;
+    }
+
+    /* Thin scrollbar for Firefox */
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #d1d5db #f3f4f6;
+    }
+
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hidden::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hidden {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    /* ----------------------------------------------------------
+       Loading Spinner
+       ---------------------------------------------------------- */
+    .spinner {
+        @apply inline-block w-5 h-5 border-2 border-current border-t-transparent rounded-full;
+        animation: spin 0.6s linear infinite;
+    }
+
+    .spinner-sm {
+        @apply w-4 h-4;
+    }
+
+    .spinner-lg {
+        @apply w-8 h-8 border-[3px];
+    }
+
+    .spinner-xl {
+        @apply w-12 h-12 border-4;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Full-page loading overlay */
+    .loading-overlay {
+        @apply fixed inset-0 bg-white/80 flex items-center justify-center z-50;
+        backdrop-filter: blur(2px);
+    }
+
+    /* Pulse loading animation for skeleton screens */
+    .skeleton {
+        @apply bg-gray-200 rounded animate-pulse;
+    }
+
+    /* ----------------------------------------------------------
+       OCR Confidence Indicators
+       ---------------------------------------------------------- */
+    .confidence-high {
+        @apply border-l-4 border-green-500 bg-green-50;
+    }
+
+    .confidence-medium {
+        @apply border-l-4 border-amber-500 bg-amber-50;
+    }
+
+    .confidence-low {
+        @apply border-l-4 border-red-500 bg-red-50;
+    }
+
+    .confidence-dot-high {
+        @apply w-2.5 h-2.5 rounded-full bg-green-500 inline-block;
+    }
+
+    .confidence-dot-medium {
+        @apply w-2.5 h-2.5 rounded-full bg-amber-500 inline-block;
+    }
+
+    .confidence-dot-low {
+        @apply w-2.5 h-2.5 rounded-full bg-red-500 inline-block;
+    }
+
+    /* Input field confidence borders */
+    input.confidence-high-border,
+    select.confidence-high-border {
+        @apply border-green-400 ring-1 ring-green-200;
+    }
+
+    input.confidence-medium-border,
+    select.confidence-medium-border {
+        @apply border-amber-400 ring-1 ring-amber-200;
+    }
+
+    input.confidence-low-border,
+    select.confidence-low-border {
+        @apply border-red-400 ring-1 ring-red-200;
+    }
+
+    /* ----------------------------------------------------------
+       Form Styles
+       ---------------------------------------------------------- */
+    .form-input {
+        @apply w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-900
+               placeholder-gray-400 shadow-sm transition
+               focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20
+               disabled:bg-gray-100 disabled:cursor-not-allowed;
+    }
+
+    .form-select {
+        @apply form-input appearance-none bg-no-repeat;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+
+    .form-error {
+        @apply text-sm text-red-600 mt-1;
+    }
+
+    /* ----------------------------------------------------------
+       Button Styles
+       ---------------------------------------------------------- */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5
+               text-sm font-semibold transition-all duration-150
+               focus:outline-none focus:ring-2 focus:ring-offset-2
+               disabled:opacity-50 disabled:cursor-not-allowed
+               active:scale-[0.98];
+    }
+
+    .btn-primary {
+        @apply btn bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500
+               shadow-sm hover:shadow;
+    }
+
+    .btn-success {
+        @apply btn bg-green-600 text-white hover:bg-green-700 focus:ring-green-500
+               shadow-sm hover:shadow;
+    }
+
+    .btn-danger {
+        @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500
+               shadow-sm hover:shadow;
+    }
+
+    .btn-warning {
+        @apply btn bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-500
+               shadow-sm hover:shadow;
+    }
+
+    .btn-secondary {
+        @apply btn bg-white text-gray-700 border border-gray-300
+               hover:bg-gray-50 focus:ring-gray-500 shadow-sm;
+    }
+
+    .btn-ghost {
+        @apply btn bg-transparent text-gray-600 hover:bg-gray-100 focus:ring-gray-400;
+    }
+
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+
+    .btn-lg {
+        @apply px-6 py-3 text-base;
+    }
+
+    .btn-xl {
+        @apply px-8 py-4 text-lg rounded-xl;
+    }
+
+    /* ----------------------------------------------------------
+       Card Styles
+       ---------------------------------------------------------- */
+    .card {
+        @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden;
+    }
+
+    .card-body {
+        @apply p-4 md:p-6;
+    }
+
+    /* ----------------------------------------------------------
+       Badge Styles
+       ---------------------------------------------------------- */
+    .badge {
+        @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    }
+
+    .badge-green {
+        @apply badge bg-green-100 text-green-800;
+    }
+
+    .badge-red {
+        @apply badge bg-red-100 text-red-800;
+    }
+
+    .badge-amber {
+        @apply badge bg-amber-100 text-amber-800;
+    }
+
+    .badge-blue {
+        @apply badge bg-blue-100 text-blue-800;
+    }
+
+    .badge-gray {
+        @apply badge bg-gray-100 text-gray-800;
+    }
+
+    /* ----------------------------------------------------------
+       Table Styles
+       ---------------------------------------------------------- */
+    .table-container {
+        @apply overflow-x-auto -mx-4 md:mx-0 custom-scrollbar;
+    }
+
+    .data-table {
+        @apply w-full min-w-[640px] text-sm;
+    }
+
+    .data-table thead {
+        @apply bg-gray-50 border-b border-gray-200;
+    }
+
+    .data-table th {
+        @apply px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider;
+    }
+
+    .data-table td {
+        @apply px-4 py-3 text-gray-700 border-b border-gray-100;
+    }
+
+    .data-table tbody tr {
+        @apply hover:bg-gray-50 transition-colors;
+    }
+
+    /* ----------------------------------------------------------
+       Mobile Touch Helpers
+       ---------------------------------------------------------- */
+    .touch-target {
+        @apply min-h-[44px] min-w-[44px];
+    }
+
+    .safe-area-bottom {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    /* ----------------------------------------------------------
+       Sidebar Transitions
+       ---------------------------------------------------------- */
+    .sidebar-enter {
+        @apply transform -translate-x-full;
+    }
+
+    .sidebar-enter-active {
+        @apply transform translate-x-0 transition-transform duration-300 ease-out;
+    }
+
+    .sidebar-leave-active {
+        @apply transform -translate-x-full transition-transform duration-200 ease-in;
+    }
+}
+
+/* ============================================================
+   Print Styles - Invoice Printing
+   ============================================================ */
+@media print {
+    /* Reset everything */
+    *,
+    *::before,
+    *::after {
+        background: transparent !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    /* Hide non-printable elements */
+    nav,
+    .sidebar,
+    .no-print,
+    .toast-container,
+    header,
+    footer,
+    button:not(.print-visible),
+    .pagination,
+    .mobile-nav {
+        display: none !important;
+    }
+
+    /* Page setup */
+    @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+    }
+
+    body {
+        font-size: 11pt;
+        line-height: 1.4;
+        color: #000 !important;
+        background: #fff !important;
+    }
+
+    /* Invoice container */
+    .invoice-print {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Store header */
+    .invoice-header {
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 8pt;
+        margin-bottom: 8pt;
+    }
+
+    .invoice-header h1 {
+        font-size: 16pt;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .invoice-header .store-details {
+        font-size: 9pt;
+        color: #333;
+    }
+
+    /* Invoice details */
+    .invoice-details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8pt;
+        font-size: 10pt;
+    }
+
+    /* Items table */
+    .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10pt;
+        font-size: 9pt;
+    }
+
+    .invoice-table th {
+        background-color: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        border: 1px solid #333;
+        padding: 4pt 6pt;
+        text-align: left;
+        font-weight: bold;
+        font-size: 8pt;
+        text-transform: uppercase;
+    }
+
+    .invoice-table td {
+        border: 1px solid #ccc;
+        padding: 3pt 6pt;
+    }
+
+    .invoice-table .text-right {
+        text-align: right;
+    }
+
+    /* Totals */
+    .invoice-totals {
+        float: right;
+        width: 45%;
+        font-size: 10pt;
+    }
+
+    .invoice-totals table {
+        width: 100%;
+    }
+
+    .invoice-totals td {
+        padding: 2pt 4pt;
+    }
+
+    .invoice-totals .grand-total {
+        font-size: 12pt;
+        font-weight: bold;
+        border-top: 2px solid #000;
+    }
+
+    /* Amount in words */
+    .amount-words {
+        clear: both;
+        font-size: 9pt;
+        font-style: italic;
+        border-top: 1px solid #ccc;
+        padding-top: 6pt;
+        margin-top: 10pt;
+    }
+
+    /* Footer */
+    .invoice-footer {
+        text-align: center;
+        font-size: 9pt;
+        color: #666;
+        margin-top: 20pt;
+        padding-top: 8pt;
+        border-top: 1px solid #ccc;
+    }
+
+    /* Prevent page breaks inside rows */
+    tr {
+        page-break-inside: avoid;
+    }
+
+    /* Allow page break before totals if needed */
+    .invoice-totals {
+        page-break-inside: avoid;
+    }
+}
+
+/* ============================================================
+   Utility Animations
+   ============================================================ */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+}
