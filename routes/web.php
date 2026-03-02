@@ -1,60 +1,87 @@
 <?php
 
+use App\Http\Controllers\Web\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group.
-|
 */
 
-// Public routes
+// ── Public / Guest routes ─────────────────────────────────
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login')->middleware('guest');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return view('auth.login');
+    })->name('login');
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register')->middleware('guest');
+    Route::post('/login', [AuthController::class, 'login']);
 
-// Authenticated app shell (SPA-like with Blade + Alpine.js)
-Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/register', function () {
+        return view('auth.register');
+    })->name('register');
+
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+// ── Authenticated routes ──────────────────────────────────
+Route::middleware(['auth'])->group(function () {
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', function () {
-        return view('app.dashboard');
+        return view('pages.dashboard.index');
     })->name('dashboard');
 
-    // All app routes render the same shell; Alpine.js handles client-side routing
     Route::get('/items', function () {
-        return view('app.items.index');
+        return view('pages.items.index');
     })->name('items.index');
 
+    Route::get('/items/create', function () {
+        return view('pages.items.create');
+    })->name('items.create');
+
     Route::get('/purchases', function () {
-        return view('app.purchases.index');
+        return view('pages.purchases.index');
     })->name('purchases.index');
 
+    Route::get('/purchases/create', function () {
+        return view('pages.purchases.create');
+    })->name('purchases.create');
+
     Route::get('/sales', function () {
-        return view('app.sales.index');
+        return view('pages.sales.index');
     })->name('sales.index');
 
+    Route::get('/sales/create', function () {
+        return view('pages.sales.create');
+    })->name('sales.create');
+
     Route::get('/inventory', function () {
-        return view('app.inventory.index');
+        return view('pages.inventory.index');
     })->name('inventory.index');
 
     Route::get('/reports', function () {
-        return view('app.reports.index');
+        return view('pages.reports.index');
     })->name('reports.index');
 
+    Route::get('/customers', function () {
+        return view('pages.customers.index');
+    })->name('customers.index');
+
+    Route::get('/suppliers', function () {
+        return view('pages.suppliers.index');
+    })->name('suppliers.index');
+
+    Route::get('/expenses', function () {
+        return view('pages.expenses.index');
+    })->name('expenses.index');
+
     Route::get('/settings', function () {
-        return view('app.settings.index');
+        return view('pages.settings.index');
     })->name('settings.index');
 });

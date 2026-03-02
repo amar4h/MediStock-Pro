@@ -5,7 +5,8 @@
 @section('subheading', 'Sign in to your MediStock Pro account')
 
 @section('content')
-<form method="POST" action="{{ route('login') }}" class="space-y-5">
+<form method="POST" action="{{ route('login') }}" class="space-y-5"
+      x-data="{ loading: false }" @submit="loading = true">
     @csrf
 
     {{-- Email --}}
@@ -90,8 +91,6 @@
     {{-- Submit --}}
     <button type="submit"
             class="btn-primary w-full py-3 text-base"
-            x-data="{ loading: false }"
-            @click="loading = true"
             :disabled="loading">
         <template x-if="!loading">
             <span>Sign In</span>

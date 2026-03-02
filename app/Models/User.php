@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use App\Models\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, BelongsToTenant, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'tenant_id',
@@ -37,7 +37,24 @@ class User extends Authenticatable
         'last_login_at' => 'datetime',
     ];
 
+    // ── Boot ────────────────────────────────────────────────────
+
+    protected static function booted(): void
+    {
+        // Auto-set tenant_id when creating a user (if not already set)
+        static::creating(function ($model) {
+            if (Auth::check() && ! $model->tenant_id) {
+                $model->tenant_id = Auth::user()->tenant_id;
+            }
+        });
+    }
+
     // ── Relationships ────────────────────────────────────────────
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 
     public function role(): BelongsTo
     {
