@@ -57,20 +57,15 @@ class StockService
             $threshold = $tenant?->settings['low_stock_threshold'] ?? 10;
         }
 
+        $stockSub = '(SELECT COALESCE(SUM(b.stock_quantity), 0) FROM batches b WHERE b.item_id = items.id AND b.tenant_id = ? AND b.is_active = 1)';
+
         return Item::withoutGlobalScopes()
             ->where('items.tenant_id', $tenantId)
             ->where('items.is_active', true)
             ->whereNull('items.deleted_at')
-            ->select('items.*')
-            ->selectRaw('COALESCE(SUM(batches.stock_quantity), 0) as total_stock')
-            ->leftJoin('batches', function ($join) use ($tenantId) {
-                $join->on('batches.item_id', '=', 'items.id')
-                     ->where('batches.tenant_id', '=', $tenantId)
-                     ->where('batches.is_active', '=', true);
-            })
-            ->groupBy('items.id')
-            ->havingRaw('COALESCE(SUM(batches.stock_quantity), 0) < ?', [$threshold])
-            ->orderByRaw('COALESCE(SUM(batches.stock_quantity), 0) ASC')
+            ->selectRaw("items.*, $stockSub as total_stock", [$tenantId])
+            ->whereRaw("$stockSub < ?", [$tenantId, $threshold])
+            ->orderByRaw("$stockSub ASC", [$tenantId])
             ->get();
     }
 
@@ -121,28 +116,20 @@ class StockService
     {
         $cutoffDate = Carbon::today()->subDays($days);
 
+        $stockSub = '(SELECT COALESCE(SUM(b.stock_quantity), 0) FROM batches b WHERE b.item_id = items.id AND b.tenant_id = ?)';
+        $moveSub  = '(SELECT MAX(sm.created_at) FROM stock_movements sm WHERE sm.item_id = items.id AND sm.tenant_id = ?)';
+
         return Item::withoutGlobalScopes()
             ->where('items.tenant_id', $tenantId)
             ->where('items.is_active', true)
             ->whereNull('items.deleted_at')
-            ->select('items.*')
-            ->selectRaw('COALESCE(SUM(batches.stock_quantity), 0) as total_stock')
-            ->selectRaw('MAX(stock_movements.created_at) as last_movement_at')
-            ->leftJoin('batches', function ($join) use ($tenantId) {
-                $join->on('batches.item_id', '=', 'items.id')
-                     ->where('batches.tenant_id', '=', $tenantId);
+            ->selectRaw("items.*, $stockSub as total_stock, $moveSub as last_movement_at", [$tenantId, $tenantId])
+            ->whereRaw("$stockSub > 0", [$tenantId])
+            ->where(function ($q) use ($moveSub, $tenantId, $cutoffDate) {
+                $q->whereRaw("$moveSub < ?", [$tenantId, $cutoffDate])
+                  ->orWhereRaw("$moveSub IS NULL", [$tenantId]);
             })
-            ->leftJoin('stock_movements', function ($join) use ($tenantId) {
-                $join->on('stock_movements.item_id', '=', 'items.id')
-                     ->where('stock_movements.tenant_id', '=', $tenantId);
-            })
-            ->groupBy('items.id')
-            ->havingRaw('COALESCE(SUM(batches.stock_quantity), 0) > 0')
-            ->having(function ($query) use ($cutoffDate) {
-                $query->havingRaw('MAX(stock_movements.created_at) < ?', [$cutoffDate])
-                      ->orHavingRaw('MAX(stock_movements.created_at) IS NULL');
-            })
-            ->orderByRaw('MAX(stock_movements.created_at) ASC')
+            ->orderByRaw("$moveSub ASC", [$tenantId])
             ->get();
     }
 

@@ -75,6 +75,18 @@ class Item extends Model
 
     // ── Scopes ───────────────────────────────────────────────────
 
+    // ── Accessors ───────────────────────────────────────────────
+
+    public function getCurrentStockAttribute(): int
+    {
+        return (int) ($this->total_stock ?? $this->batches()->sum('stock_quantity'));
+    }
+
+    public function getStatusAttribute(): string
+    {
+        return $this->is_active ? 'active' : 'inactive';
+    }
+
     /**
      * FULLTEXT search scope for item name and composition.
      * Falls back to LIKE search if FULLTEXT is not available.

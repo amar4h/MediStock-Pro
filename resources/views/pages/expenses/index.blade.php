@@ -59,8 +59,8 @@
                 <div class="flex-1">
                     <select name="category" class="form-select">
                         <option value="">All Categories</option>
-                        @foreach(($categories ?? ['Rent', 'Electricity', 'Salary', 'Transport', 'Repairs', 'Stationary', 'Marketing', 'Insurance', 'Other']) as $cat)
-                        <option value="{{ $cat }}" {{ request('category') === $cat ? 'selected' : '' }}>{{ $cat }}</option>
+                        @foreach(($categories ?? []) as $cat)
+                        <option value="{{ is_object($cat) ? $cat->name : $cat }}" {{ request('category') === (is_object($cat) ? $cat->name : $cat) ? 'selected' : '' }}>{{ is_object($cat) ? $cat->name : $cat }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -108,21 +108,14 @@
                                     'Transport' => 'badge-gray',
                                 ];
                             @endphp
-                            <span class="{{ $catColors[$expense->category] ?? 'badge-gray' }}">{{ $expense->category }}</span>
+                            @php $catName = $expense->expenseCategory->name ?? 'Other'; @endphp
+                            <span class="{{ $catColors[$catName] ?? 'badge-gray' }}">{{ $catName }}</span>
                         </td>
                         <td class="text-sm text-gray-700 truncate max-w-[200px]">{{ $expense->description ?? '-' }}</td>
                         <td class="text-right font-semibold text-red-600 whitespace-nowrap">₹{{ number_format($expense->amount, 2) }}</td>
                         <td class="hidden sm:table-cell text-sm text-gray-600">{{ ucfirst($expense->payment_mode ?? 'cash') }}</td>
                         <td>
                             <div class="flex items-center gap-1">
-                                <a href="{{ route('expenses.edit', $expense->id) }}"
-                                   class="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                                   title="Edit">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </a>
                                 <form method="POST" action="{{ route('expenses.destroy', $expense->id) }}"
                                       onsubmit="return confirm('Delete this expense?')">
                                     @csrf
@@ -205,10 +198,10 @@
                         </div>
                         <div>
                             <label class="form-label">Category <span class="text-red-500">*</span></label>
-                            <select name="category" class="form-select" required>
+                            <select name="expense_category_id" class="form-select" required>
                                 <option value="">Select Category</option>
-                                @foreach(['Rent', 'Electricity', 'Salary', 'Transport', 'Repairs', 'Stationary', 'Marketing', 'Insurance', 'Other'] as $cat)
-                                <option value="{{ $cat }}">{{ $cat }}</option>
+                                @foreach(($categories ?? []) as $cat)
+                                <option value="{{ is_object($cat) ? $cat->id : '' }}">{{ is_object($cat) ? $cat->name : $cat }}</option>
                                 @endforeach
                             </select>
                         </div>

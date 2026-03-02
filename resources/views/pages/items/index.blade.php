@@ -133,9 +133,9 @@
                             <p class="text-sm text-gray-600 truncate max-w-[200px]">{{ $item->composition ?? '-' }}</p>
                         </td>
                         <td class="hidden sm:table-cell">
-                            <span class="badge-blue">{{ $item->category ?? '-' }}</span>
+                            <span class="badge-blue">{{ $item->category->name ?? '-' }}</span>
                         </td>
-                        <td class="hidden lg:table-cell text-sm text-gray-600">{{ $item->manufacturer ?? '-' }}</td>
+                        <td class="hidden lg:table-cell text-sm text-gray-600">{{ $item->manufacturer->name ?? '-' }}</td>
                         <td class="text-sm">{{ $item->gst_percent ?? 0 }}%</td>
                         <td>
                             @php $stock = $item->current_stock ?? 0; @endphp

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -74,6 +75,13 @@ class User extends Authenticatable
     public function auditLogs(): HasMany
     {
         return $this->hasMany(AuditLog::class);
+    }
+
+    // ── Scopes ──────────────────────────────────────────────────
+
+    public function scopeForTenant(Builder $query, ?int $tenantId = null): Builder
+    {
+        return $query->where('tenant_id', $tenantId ?? auth()->user()->tenant_id);
     }
 
     // ── Helpers ──────────────────────────────────────────────────

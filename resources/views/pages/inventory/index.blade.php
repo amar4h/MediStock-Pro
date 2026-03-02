@@ -99,9 +99,9 @@
                         <tr>
                             <td>
                                 <p class="font-medium text-gray-900">{{ $item->name }}</p>
-                                <p class="text-xs text-gray-500 sm:hidden">{{ $item->category ?? '' }}</p>
+                                <p class="text-xs text-gray-500 sm:hidden">{{ $item->category->name ?? '' }}</p>
                             </td>
-                            <td class="hidden sm:table-cell"><span class="badge-blue">{{ $item->category ?? '-' }}</span></td>
+                            <td class="hidden sm:table-cell"><span class="badge-blue">{{ $item->category->name ?? '-' }}</span></td>
                             <td class="text-right font-medium">{{ $item->current_stock ?? 0 }}</td>
                             <td class="text-right hidden sm:table-cell">₹{{ number_format($item->stock_value ?? 0, 2) }}</td>
                             <td class="hidden md:table-cell">{{ $item->batches_count ?? 0 }}</td>
@@ -146,7 +146,7 @@
                         <tr>
                             <td>
                                 <p class="font-medium text-gray-900">{{ $item->name }}</p>
-                                <p class="text-xs text-gray-500">{{ $item->manufacturer ?? '' }}</p>
+                                <p class="text-xs text-gray-500">{{ $item->manufacturer->name ?? '' }}</p>
                             </td>
                             <td class="text-right">
                                 <span class="font-semibold {{ ($item->current_stock ?? 0) <= 0 ? 'text-red-600' : 'text-amber-600' }}">
@@ -280,7 +280,7 @@
                         <tr>
                             <td>
                                 <p class="font-medium text-gray-900">{{ $item->name }}</p>
-                                <p class="text-xs text-gray-500">{{ $item->manufacturer ?? '' }}</p>
+                                <p class="text-xs text-gray-500">{{ $item->manufacturer->name ?? '' }}</p>
                             </td>
                             <td class="text-right">{{ $item->current_stock ?? 0 }}</td>
                             <td class="text-right hidden sm:table-cell">₹{{ number_format($item->stock_value ?? 0, 2) }}</td>

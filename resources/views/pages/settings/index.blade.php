@@ -59,7 +59,7 @@
                             <textarea name="address"
                                       class="form-input @error('address') border-red-500 @enderror"
                                       rows="2"
-                                      placeholder="Full store address">{{ old('address', $tenant->address ?? '') }}</textarea>
+                                      placeholder="Full store address">{{ old('address', $tenant->address_line1 ?? '') }}</textarea>
                             @error('address')
                             <p class="form-error">{{ $message }}</p>
                             @enderror
@@ -101,7 +101,7 @@
                         <div>
                             <label class="form-label">Drug License Number</label>
                             <input type="text" name="drug_license"
-                                   value="{{ old('drug_license', $tenant->drug_license ?? '') }}"
+                                   value="{{ old('drug_license', $tenant->drug_license_no ?? '') }}"
                                    class="form-input font-mono"
                                    placeholder="Drug license number">
                         </div>
@@ -186,8 +186,8 @@
                                             'cashier' => 'badge-gray',
                                         ];
                                     @endphp
-                                    <span class="{{ $roleColors[$user->role] ?? 'badge-gray' }}">
-                                        {{ ucfirst(str_replace('_', ' ', $user->role)) }}
+                                    <span class="{{ $roleColors[($user->role->name ?? '')] ?? 'badge-gray' }}">
+                                        {{ ucfirst(str_replace('_', ' ', ($user->role->name ?? ''))) }}
                                     </span>
                                 </td>
                                 <td class="hidden sm:table-cell">
@@ -201,7 +201,7 @@
                                     {{ $user->last_login_at ? \Carbon\Carbon::parse($user->last_login_at)->diffForHumans() : 'Never' }}
                                 </td>
                                 <td>
-                                    @if(($user->role ?? '') !== 'owner')
+                                    @if((($user->role->name ?? '') ?? '') !== 'owner')
                                     <div class="flex items-center gap-1">
                                         <button class="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                                                 title="Edit User">
@@ -274,11 +274,11 @@
                             </div>
                             <div>
                                 <label class="form-label">Role <span class="text-red-500">*</span></label>
-                                <select name="role" class="form-select" required>
+                                <select name="role_id" class="form-select" required>
                                     <option value="">Select Role</option>
-                                    <option value="store_manager">Store Manager</option>
-                                    <option value="pharmacist">Pharmacist</option>
-                                    <option value="cashier">Cashier</option>
+                                    @foreach(($roles ?? []) as $role)
+                                    <option value="{{ $role->id }}">{{ ucfirst(str_replace('_', ' ', $role->name)) }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div>

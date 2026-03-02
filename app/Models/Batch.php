@@ -57,6 +57,13 @@ class Batch extends Model
         return $this->hasMany(StockMovement::class);
     }
 
+    // ── Accessors ───────────────────────────────────────────────
+
+    public function getQtyAttribute(): int
+    {
+        return (int) $this->stock_quantity;
+    }
+
     // ── Scopes ───────────────────────────────────────────────────
 
     /**

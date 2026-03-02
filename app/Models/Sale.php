@@ -73,4 +73,21 @@ class Sale extends Model
     {
         return $this->hasMany(CustomerPayment::class);
     }
+
+    // ── Accessors ───────────────────────────────────────────────
+
+    public function getGrandTotalAttribute(): float
+    {
+        return (float) $this->total_amount;
+    }
+
+    public function getCustomerNameAttribute(): string
+    {
+        return $this->customer?->name ?? 'Walk-in';
+    }
+
+    public function getItemsCountAttribute(): int
+    {
+        return $this->sale_items_count ?? $this->saleItems()->count();
+    }
 }

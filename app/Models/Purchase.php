@@ -66,4 +66,16 @@ class Purchase extends Model
     {
         return $this->hasMany(SupplierPayment::class);
     }
+
+    // ── Accessors ───────────────────────────────────────────────
+
+    public function getGrandTotalAttribute(): float
+    {
+        return (float) $this->total_amount;
+    }
+
+    public function getItemsCountAttribute(): int
+    {
+        return $this->purchase_items_count ?? $this->purchaseItems()->count();
+    }
 }

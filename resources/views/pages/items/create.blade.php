@@ -69,7 +69,7 @@
                         <select id="category" name="category" class="form-select @error('category') border-red-500 @enderror" required>
                             <option value="">Select Category</option>
                             @foreach(($categories ?? ['Tablet', 'Capsule', 'Syrup', 'Injection', 'Cream/Ointment', 'Drops', 'Powder', 'Inhaler', 'Surgical', 'OTC', 'Ayurvedic', 'Other']) as $cat)
-                            <option value="{{ $cat }}" {{ old('category', $item->category ?? '') === $cat ? 'selected' : '' }}>
+                            <option value="{{ $cat }}" {{ old('category', $item->category->name ?? '') === $cat ? 'selected' : '' }}>
                                 {{ $cat }}
                             </option>
                             @endforeach
@@ -84,7 +84,7 @@
                         <input type="text"
                                id="manufacturer"
                                name="manufacturer"
-                               value="{{ old('manufacturer', $item->manufacturer ?? '') }}"
+                               value="{{ old('manufacturer', $item->manufacturer->name ?? '') }}"
                                class="form-input @error('manufacturer') border-red-500 @enderror"
                                placeholder="e.g., Cipla Ltd"
                                list="manufacturers-list">
